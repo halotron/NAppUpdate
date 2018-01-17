@@ -1,8 +1,8 @@
 using System;
 using System.Text.RegularExpressions;
+
 namespace NAppUpdate.Updater
 {
-
 	public class ArgumentsParser
 	{
 		public bool HasArgs { get; private set; }
@@ -12,6 +12,7 @@ namespace NAppUpdate.Updater
 		public string CallingApp { get; set; }
 
 		private static ArgumentsParser _instance;
+
 		protected ArgumentsParser()
 		{
 		}
@@ -41,7 +42,7 @@ namespace NAppUpdate.Updater
 				// In Visual Studio, the arg will be the VS host starter instead of
 				// actually ourself.
 				if (arg.Equals(System.Reflection.Assembly.GetEntryAssembly().Location, StringComparison.InvariantCultureIgnoreCase)
-					|| arg.EndsWith(".vshost.exe", StringComparison.InvariantCultureIgnoreCase))
+				    || arg.EndsWith(".vshost.exe", StringComparison.InvariantCultureIgnoreCase))
 				{
 					CallingApp = arg.ToLower().Replace(".vshost.exe", string.Empty);
 					continue;
@@ -67,7 +68,6 @@ namespace NAppUpdate.Updater
 				{
 					Console.WriteLine("Unrecognized arg '{0}'", arg);
 				}
-
 			}
 		}
 

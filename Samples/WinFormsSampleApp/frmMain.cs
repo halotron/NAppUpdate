@@ -19,7 +19,8 @@ namespace WinFormsSampleApp
 			// UpdateManager initialization
 			UpdateManager updManager = UpdateManager.Instance;
 			updManager.UpdateSource = new SimpleWebSource( /* update feed URL */);
-			updManager.Config.TempFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "NAppUpdateWinFormsSample\\Updates");
+			updManager.Config.TempFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
+				"NAppUpdateWinFormsSample\\Updates");
 			// If you don't call this method, the updater.exe will continually attempt to connect the named pipe and get stuck.
 			// Therefore you should always implement this method call.
 			updManager.ReinstateIfRestarted();
@@ -115,7 +116,11 @@ namespace WinFormsSampleApp
 				return;
 			}
 
-			DialogResult dr = MessageBox.Show(string.Format("Updates are available to your software ({0} total). Do you want to download and prepare them now? You can always do this at a later time.", updManager.UpdatesAvailable), "Software updates available", MessageBoxButtons.YesNo);
+			DialogResult dr =
+				MessageBox.Show(
+					string.Format(
+						"Updates are available to your software ({0} total). Do you want to download and prepare them now? You can always do this at a later time.",
+						updManager.UpdatesAvailable), "Software updates available", MessageBoxButtons.YesNo);
 
 			if (dr == DialogResult.Yes) updManager.BeginPrepareUpdates(OnPrepareUpdatesCompleted, null);
 		}
@@ -145,7 +150,8 @@ namespace WinFormsSampleApp
 
 			if (updManager.State != UpdateManager.UpdateProcessState.Prepared)
 			{
-				MessageBox.Show("Cannot install updates at the current state, they need to be prepared first. Current state is " + updManager.State.ToString());
+				MessageBox.Show("Cannot install updates at the current state, they need to be prepared first. Current state is " +
+								updManager.State.ToString());
 				return;
 			}
 
@@ -160,14 +166,16 @@ namespace WinFormsSampleApp
 			}
 			catch (Exception ex)
 			{
-				MessageBox.Show(string.Format("Updates preperation failed. Check the feed and try again.{0}{1}", Environment.NewLine, ex));
+				MessageBox.Show(string.Format("Updates preperation failed. Check the feed and try again.{0}{1}",
+					Environment.NewLine, ex));
 				return;
 			}
 
 			// Get a local pointer to the UpdateManager instance
 			UpdateManager updManager = UpdateManager.Instance;
 
-			DialogResult dr = MessageBox.Show("Updates are ready to install. Do you wish to install them now?", "Software updates ready", MessageBoxButtons.YesNo);
+			DialogResult dr = MessageBox.Show("Updates are ready to install. Do you wish to install them now?",
+				"Software updates ready", MessageBoxButtons.YesNo);
 
 			if (dr != DialogResult.Yes) return;
 			// This is a synchronous method by design, make sure to save all user work before calling
@@ -218,7 +226,8 @@ namespace WinFormsSampleApp
 		{
 			if (UpdateManager.Instance.State != UpdateManager.UpdateProcessState.RollbackRequired)
 			{
-				MessageBox.Show("There is no failed update process to rollback; current state: " + UpdateManager.Instance.State.ToString());
+				MessageBox.Show("There is no failed update process to rollback; current state: " +
+								UpdateManager.Instance.State.ToString());
 				return;
 			}
 

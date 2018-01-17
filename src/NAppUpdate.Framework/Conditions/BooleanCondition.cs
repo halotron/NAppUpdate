@@ -37,6 +37,7 @@ namespace NAppUpdate.Framework.Conditions
 			// Make AND the default condition type
 			return ConditionType.AND;
 		}
+
 		#endregion
 
 		protected class ConditionItem
@@ -62,7 +63,15 @@ namespace NAppUpdate.Framework.Conditions
 		}
 
 		protected LinkedList<ConditionItem> ChildConditions { get; set; }
-		public int ChildConditionsCount { get { if (ChildConditions != null) return ChildConditions.Count; return 0; } }
+
+		public int ChildConditionsCount
+		{
+			get
+			{
+				if (ChildConditions != null) return ChildConditions.Count;
+				return 0;
+			}
+		}
 
 		public void AddCondition(IUpdateCondition cnd)
 		{
@@ -102,7 +111,10 @@ namespace NAppUpdate.Framework.Conditions
 					if (passed && item.HasConditionType(ConditionType.OR))
 						return true;
 				}
-				else { firstRun = false; }
+				else
+				{
+					firstRun = false;
+				}
 
 				// Skip all ANDed conditions if some of them failed, until we consume all the conditions
 				// or we hit an OR'ed one

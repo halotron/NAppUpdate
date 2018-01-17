@@ -42,6 +42,7 @@ namespace NAppUpdate.Framework.Tasks
 				return null;
 			}
 		}
+
 		private object _originalValue;
 
 		public override void Prepare(Sources.IUpdateSource source)

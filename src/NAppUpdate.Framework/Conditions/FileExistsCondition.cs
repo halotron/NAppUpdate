@@ -18,7 +18,9 @@ namespace NAppUpdate.Framework.Conditions
 
 		public bool IsMet(Tasks.IUpdateTask task)
 		{
-			string localPath = !string.IsNullOrEmpty(LocalPath) ? LocalPath : Utils.Reflection.GetNauAttribute(task, "LocalPath") as string;
+			string localPath = !string.IsNullOrEmpty(LocalPath)
+				? LocalPath
+				: Utils.Reflection.GetNauAttribute(task, "LocalPath") as string;
 			if (string.IsNullOrEmpty(localPath))
 				return true;
 

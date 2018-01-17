@@ -32,14 +32,14 @@ namespace NAppUpdate.Framework.Utils
 				if (rule.AccessControlType == AccessControlType.Deny &&
 					(rule.FileSystemRights & FileSystemRights.WriteData) == FileSystemRights.WriteData &&
 					(groups.Contains(rule.IdentityReference) || rule.IdentityReference.Value == sidCurrentUser)
-					)
+				)
 				{
 					denywrite = true;
 				}
 				if (rule.AccessControlType == AccessControlType.Allow &&
 					(rule.FileSystemRights & FileSystemRights.WriteData) == FileSystemRights.WriteData &&
 					(groups.Contains(rule.IdentityReference) || rule.IdentityReference.Value == sidCurrentUser)
-					)
+				)
 				{
 					allowwrite = true;
 				}

@@ -16,7 +16,7 @@ namespace NAppUpdate.SampleApp
 		[AttachedPropertyBrowsableForType(typeof(Image))]
 		public static ImageSource GetAnimatedSource(Image obj)
 		{
-			return (ImageSource)obj.GetValue(AnimatedSourceProperty);
+			return (ImageSource) obj.GetValue(AnimatedSourceProperty);
 		}
 
 		public static void SetAnimatedSource(Image obj, ImageSource value)
@@ -26,12 +26,12 @@ namespace NAppUpdate.SampleApp
 
 		public static readonly DependencyProperty AnimatedSourceProperty =
 			DependencyProperty.RegisterAttached(
-			  "AnimatedSource",
-			  typeof(ImageSource),
-			  typeof(ImageBehavior),
-			  new UIPropertyMetadata(
-				null,
-				AnimatedSourceChanged));
+				"AnimatedSource",
+				typeof(ImageSource),
+				typeof(ImageBehavior),
+				new UIPropertyMetadata(
+					null,
+					AnimatedSourceChanged));
 
 		private static void AnimatedSourceChanged(DependencyObject o, DependencyPropertyChangedEventArgs e)
 		{
@@ -81,7 +81,7 @@ namespace NAppUpdate.SampleApp
 					animation.Duration = totalDuration;
 					animation.RepeatBehavior = RepeatBehavior.Forever;
 					if (animation.KeyFrames.Count > 0)
-						imageControl.Source = (ImageSource)animation.KeyFrames[0].Value;
+						imageControl.Source = (ImageSource) animation.KeyFrames[0].Value;
 					else
 						imageControl.Source = decoder.Frames[0];
 					imageControl.BeginAnimation(Image.SourceProperty, animation);
@@ -131,7 +131,7 @@ namespace NAppUpdate.SampleApp
 			using (var context = visual.RenderOpen())
 			{
 				if (previousFrameInfo != null && previousFrame != null &&
-					previousFrameInfo.DisposalMethod == FrameDisposalMethod.Combine)
+				    previousFrameInfo.DisposalMethod == FrameDisposalMethod.Combine)
 				{
 					var fullRect = new Rect(0, 0, fullImage.PixelWidth, fullImage.PixelHeight);
 					context.DrawImage(previousFrame, fullRect);
@@ -201,7 +201,7 @@ namespace NAppUpdate.SampleApp
 
 					var disposal = metadata.GetQueryOrNull<byte>(disposalQuery);
 					if (disposal.HasValue)
-						frameInfo.DisposalMethod = (FrameDisposalMethod)disposal.Value;
+						frameInfo.DisposalMethod = (FrameDisposalMethod) disposal.Value;
 
 					var width = metadata.GetQueryOrNull<ushort>(widthQuery);
 					if (width.HasValue)
@@ -234,7 +234,7 @@ namespace NAppUpdate.SampleApp
 			{
 				object value = metadata.GetQuery(query);
 				if (value != null)
-					return (T)value;
+					return (T) value;
 			}
 			return null;
 		}
@@ -243,10 +243,11 @@ namespace NAppUpdate.SampleApp
 	}
 
 	#region Extension Methods Class
+
 	public static class ImageBehaviorExtensionMethods
 	{
 		public static void DoWhenLoaded<T>(this T element, Action<T> action)
-		where T : FrameworkElement
+			where T : FrameworkElement
 		{
 			if (element.IsLoaded)
 			{
@@ -264,6 +265,6 @@ namespace NAppUpdate.SampleApp
 			}
 		}
 	}
-	#endregion
 
+	#endregion
 }

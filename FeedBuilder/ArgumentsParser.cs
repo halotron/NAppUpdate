@@ -18,7 +18,8 @@ namespace FeedBuilder
 		{
 			foreach (string thisArg in args)
 			{
-				if (thisArg.ToLower() == Application.ExecutablePath.ToLower() || thisArg.ToLower().Contains(".vshost.exe")) continue;
+				if (thisArg.ToLower() == Application.ExecutablePath.ToLower() ||
+				    thisArg.ToLower().Contains(".vshost.exe")) continue;
 
 				string arg = CleanArg(thisArg);
 				if (arg == "build")
@@ -61,7 +62,9 @@ namespace FeedBuilder
 				var d = Directory.GetParent(filename);
 				if (d.Exists) return true;
 			}
-			catch { }
+			catch
+			{
+			}
 			return false;
 		}
 

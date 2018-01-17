@@ -76,14 +76,16 @@ namespace NAppUpdate.Framework.Utils
 
 		private void ReportProgress(Action<UpdateProgressInfo> onProgress, long totalBytes, long downloadSize)
 		{
-			if (onProgress != null) onProgress(new DownloadProgressInfo
-			{
-				DownloadedInBytes = totalBytes,
-				FileSizeInBytes = downloadSize,
-				Percentage = (int)(((float)totalBytes / (float)downloadSize) * 100),
-				Message = string.Format("Downloading... ({0} / {1} completed)", ToFileSizeString(totalBytes), ToFileSizeString(downloadSize)),
-				StillWorking = totalBytes == downloadSize,
-			});
+			if (onProgress != null)
+				onProgress(new DownloadProgressInfo
+				{
+					DownloadedInBytes = totalBytes,
+					FileSizeInBytes = downloadSize,
+					Percentage = (int) (((float) totalBytes / (float) downloadSize) * 100),
+					Message = string.Format("Downloading... ({0} / {1} completed)", ToFileSizeString(totalBytes),
+						ToFileSizeString(downloadSize)),
+					StillWorking = totalBytes == downloadSize,
+				});
 		}
 
 		private string ToFileSizeString(long size)

@@ -9,7 +9,7 @@ namespace NAppUpdate.Tests.Unit
 	public class AppcastReaderTests
 	{
 		const string ZuneUpdateFeed =
-				@"<?xml version=""1.0"" encoding=""utf-8""?>
+			@"<?xml version=""1.0"" encoding=""utf-8""?>
 <rss version=""2.0"" xmlns:appcast=""http://www.adobe.com/xml-namespaces/appcast/1.0"">
   <channel>
     <title>Zune Social Tagger Update Feed</title>

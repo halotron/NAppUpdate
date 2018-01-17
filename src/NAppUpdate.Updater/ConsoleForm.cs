@@ -50,6 +50,7 @@ namespace NAppUpdate.Updater
 		}
 
 		private int _keyPresses;
+
 		private void ConsoleForm_KeyPress(object sender, KeyPressEventArgs e)
 		{
 			HandleKeyPress();
@@ -65,6 +66,5 @@ namespace NAppUpdate.Updater
 			this.KeyPress -= ConsoleForm_KeyPress;
 			_keyPresses++;
 		}
-
 	}
 }

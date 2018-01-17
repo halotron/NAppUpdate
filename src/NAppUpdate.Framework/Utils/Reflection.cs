@@ -18,7 +18,8 @@ namespace NAppUpdate.Framework.Utils
 				if (typeof(IUpdateTask).IsAssignableFrom(t))
 				{
 					updateTasks.Add(t.Name, t);
-					UpdateTaskAliasAttribute[] tasksAliases = (UpdateTaskAliasAttribute[])t.GetCustomAttributes(typeof(UpdateTaskAliasAttribute), false);
+					UpdateTaskAliasAttribute[] tasksAliases =
+						(UpdateTaskAliasAttribute[]) t.GetCustomAttributes(typeof(UpdateTaskAliasAttribute), false);
 					foreach (UpdateTaskAliasAttribute alias in tasksAliases)
 					{
 						updateTasks.Add(alias.Alias, t);
@@ -27,7 +28,8 @@ namespace NAppUpdate.Framework.Utils
 				else if (typeof(IUpdateCondition).IsAssignableFrom(t))
 				{
 					updateConditions.Add(t.Name, t);
-					UpdateConditionAliasAttribute[] tasksAliases = (UpdateConditionAliasAttribute[])t.GetCustomAttributes(typeof(UpdateConditionAliasAttribute), false);
+					UpdateConditionAliasAttribute[] tasksAliases =
+						(UpdateConditionAliasAttribute[]) t.GetCustomAttributes(typeof(UpdateConditionAliasAttribute), false);
 					foreach (UpdateConditionAliasAttribute alias in tasksAliases)
 					{
 						updateConditions.Add(alias.Alias, t);
@@ -47,7 +49,7 @@ namespace NAppUpdate.Framework.Utils
 				object[] atts = pi.GetCustomAttributes(typeof(NauFieldAttribute), false);
 				if (atts.Length != 1) continue; // NauFieldAttribute doesn't allow multiples
 
-				NauFieldAttribute nfa = (NauFieldAttribute)atts[0];
+				NauFieldAttribute nfa = (NauFieldAttribute) atts[0];
 
 				// Get the attribute value, process it, and set the object's property with that value
 				if (!attributes.TryGetValue(nfa.Alias, out attValue)) continue;
@@ -69,7 +71,9 @@ namespace NAppUpdate.Framework.Utils
 							dt = DateTime.FromFileTime(filetime);
 							pi.SetValue(fieldsHolder, dt, null);
 						}
-						catch { }
+						catch
+						{
+						}
 					}
 				}
 				// TODO: type: Uri
@@ -81,9 +85,9 @@ namespace NAppUpdate.Framework.Utils
 				}
 				else
 				{
-					MethodInfo mi = pi.PropertyType.GetMethod("Parse", new Type[] { typeof(String) });
+					MethodInfo mi = pi.PropertyType.GetMethod("Parse", new Type[] {typeof(String)});
 					if (mi == null) continue;
-					object o = mi.Invoke(null, new object[] { attValue });
+					object o = mi.Invoke(null, new object[] {attValue});
 
 					if (o != null)
 						pi.SetValue(fieldsHolder, o, null);

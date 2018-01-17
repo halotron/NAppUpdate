@@ -32,6 +32,7 @@ namespace NAppUpdate.Framework.Conditions
 
 		// Check OS bitness (32 / 64 bit)
 		// As seen on http://1code.codeplex.com/SourceControl/changeset/view/39074#842775
+
 		#region Is64BitOperatingSystem (IsWow64Process)
 
 		/// <summary>
@@ -44,17 +45,17 @@ namespace NAppUpdate.Framework.Conditions
 		/// </returns>
 		public static bool Is64BitOperatingSystem()
 		{
-			if (IntPtr.Size == 8)  // 64-bit programs run only on Win64
+			if (IntPtr.Size == 8) // 64-bit programs run only on Win64
 			{
 				return true;
 			}
-			else  // 32-bit programs run on both 32-bit and 64-bit Windows
+			else // 32-bit programs run on both 32-bit and 64-bit Windows
 			{
 				// Detect whether the current process is a 32-bit process 
 				// running on a 64-bit system.
 				bool flag;
 				return ((DoesWin32MethodExist("kernel32.dll", "IsWow64Process") &&
-					IsWow64Process(GetCurrentProcess(), out flag)) && flag);
+				         IsWow64Process(GetCurrentProcess(), out flag)) && flag);
 			}
 		}
 
@@ -86,7 +87,7 @@ namespace NAppUpdate.Framework.Conditions
 
 		[DllImport("kernel32", CharSet = CharSet.Auto, SetLastError = true)]
 		static extern IntPtr GetProcAddress(IntPtr hModule,
-			[MarshalAs(UnmanagedType.LPStr)]string procName);
+			[MarshalAs(UnmanagedType.LPStr)] string procName);
 
 		[DllImport("kernel32.dll", CharSet = CharSet.Auto, SetLastError = true)]
 		[return: MarshalAs(UnmanagedType.Bool)]

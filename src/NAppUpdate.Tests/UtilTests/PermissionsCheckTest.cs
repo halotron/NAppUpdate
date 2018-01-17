@@ -20,17 +20,12 @@ namespace NAppUpdate.Tests
 		///</summary>
 		public TestContext TestContext
 		{
-			get
-			{
-				return testContextInstance;
-			}
-			set
-			{
-				testContextInstance = value;
-			}
+			get { return testContextInstance; }
+			set { testContextInstance = value; }
 		}
 
 		#region Additional test attributes
+
 		// 
 		//You can use the following additional attributes as you write your tests:
 		//
@@ -58,6 +53,7 @@ namespace NAppUpdate.Tests
 		//{
 		//}
 		//
+
 		#endregion
 
 		/// <summary>

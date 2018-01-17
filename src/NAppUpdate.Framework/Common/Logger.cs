@@ -26,14 +26,14 @@ namespace NAppUpdate.Framework.Common
 			{
 				if (Exception == null)
 					return string.Format("{0,-25}\t{1}\t{2}",
-										 Timestamp.ToShortDateString() + " " + Timestamp.ToString("HH:mm:ss.fff"),
-										 Severity,
-										 Message);
+						Timestamp.ToShortDateString() + " " + Timestamp.ToString("HH:mm:ss.fff"),
+						Severity,
+						Message);
 
 				return string.Format("{0,-25}\t{1}\t{2}{3}{4}",
-									 Timestamp.ToShortDateString() + " " + Timestamp.ToString("HH:mm:ss.fff"),
-									 Severity,
-									 Message, Environment.NewLine, Exception);
+					Timestamp.ToShortDateString() + " " + Timestamp.ToString("HH:mm:ss.fff"),
+					Severity,
+					Message, Environment.NewLine, Exception);
 			}
 		}
 
@@ -58,11 +58,11 @@ namespace NAppUpdate.Framework.Common
 		{
 			lock (LogItems)
 				LogItems.Add(new LogItem
-								{
-									Message = string.Format(message, args),
-									Severity = severity,
-									Timestamp = DateTime.Now,
-								});
+				{
+					Message = string.Format(message, args),
+					Severity = severity,
+					Timestamp = DateTime.Now,
+				});
 		}
 
 		public void Log(Exception exception)
@@ -74,12 +74,12 @@ namespace NAppUpdate.Framework.Common
 		{
 			lock (LogItems)
 				LogItems.Add(new LogItem
-								{
-									Message = message,
-									Severity = SeverityLevel.Error,
-									Timestamp = DateTime.Now,
-									Exception = exception,
-								});
+				{
+					Message = message,
+					Severity = SeverityLevel.Error,
+					Timestamp = DateTime.Now,
+					Exception = exception,
+				});
 		}
 
 		public void Dump()

@@ -18,20 +18,17 @@ namespace NAppUpdate.Framework.Common
 
 		public string Alias
 		{
-			[System.Diagnostics.DebuggerStepThrough]
-			get { return this._alias; }
+			[System.Diagnostics.DebuggerStepThrough] get { return this._alias; }
 		}
 
 		public string Description
 		{
-			[System.Diagnostics.DebuggerStepThrough]
-			get { return this._description; }
+			[System.Diagnostics.DebuggerStepThrough] get { return this._description; }
 		}
 
 		public bool IsRequired
 		{
-			[System.Diagnostics.DebuggerStepThrough]
-			get { return this._isRequired; }
+			[System.Diagnostics.DebuggerStepThrough] get { return this._isRequired; }
 		}
 	}
 }

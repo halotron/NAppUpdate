@@ -17,7 +17,7 @@ namespace NAppUpdate.Framework.Common
 			set
 			{
 				if (UpdateManager.Instance.State == UpdateManager.UpdateProcessState.NotChecked
-					|| UpdateManager.Instance.State == UpdateManager.UpdateProcessState.Checked)
+				    || UpdateManager.Instance.State == UpdateManager.UpdateProcessState.Checked)
 				{
 					string path = value.TrimEnd(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar);
 					_backupFolder = Path.IsPathRooted(path) ? path : Path.Combine(TempFolder, path);
@@ -25,11 +25,9 @@ namespace NAppUpdate.Framework.Common
 				else
 					throw new ArgumentException("BackupFolder can only be specified before update has started");
 			}
-			get
-			{
-				return _backupFolder;
-			}
+			get { return _backupFolder; }
 		}
+
 		internal string _backupFolder;
 
 		public string UpdateProcessName { get; set; }

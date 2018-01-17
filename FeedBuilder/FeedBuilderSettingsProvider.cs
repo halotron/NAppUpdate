@@ -56,7 +56,9 @@ namespace FeedBuilder
 				{
 					Directory.CreateDirectory(GetAppSettingsPath());
 				}
-				catch (IOException) { }
+				catch (IOException)
+				{
+				}
 			}
 		}
 
@@ -97,7 +99,8 @@ namespace FeedBuilder
 			}
 		}
 
-		public override SettingsPropertyValueCollection GetPropertyValues(SettingsContext context, SettingsPropertyCollection props)
+		public override SettingsPropertyValueCollection GetPropertyValues(SettingsContext context,
+			SettingsPropertyCollection props)
 		{
 			//Create new collection of values
 			SettingsPropertyValueCollection values = new SettingsPropertyValueCollection();
@@ -169,7 +172,9 @@ namespace FeedBuilder
 
 			try
 			{
-				string path = IsRoaming(setting) ? string.Format("{0}/{1}", SETTINGSROOT, setting.Name) : string.Format("{0}/{1}/{2}", SETTINGSROOT, Environment.MachineName, setting.Name);
+				string path = IsRoaming(setting)
+					? string.Format("{0}/{1}", SETTINGSROOT, setting.Name)
+					: string.Format("{0}/{1}/{2}", SETTINGSROOT, Environment.MachineName, setting.Name);
 
 				if (setting.PropertyType.BaseType != null && setting.PropertyType.BaseType.Name == "CollectionBase")
 				{
@@ -202,11 +207,12 @@ namespace FeedBuilder
 			{
 				if (IsRoaming(propVal.Property))
 				{
-					SettingNode = (XmlElement)SettingsXML.SelectSingleNode(SETTINGSROOT + "/" + propVal.Name);
+					SettingNode = (XmlElement) SettingsXML.SelectSingleNode(SETTINGSROOT + "/" + propVal.Name);
 				}
 				else
 				{
-					SettingNode = (XmlElement)SettingsXML.SelectSingleNode(SETTINGSROOT + "/" + Environment.MachineName + "/" + propVal.Name);
+					SettingNode =
+						(XmlElement) SettingsXML.SelectSingleNode(SETTINGSROOT + "/" + Environment.MachineName + "/" + propVal.Name);
 				}
 			}
 			catch (Exception)
@@ -238,7 +244,7 @@ namespace FeedBuilder
 					XmlElement MachineNode;
 					try
 					{
-						MachineNode = (XmlElement)SettingsXML.SelectSingleNode(SETTINGSROOT + "/" + Environment.MachineName);
+						MachineNode = (XmlElement) SettingsXML.SelectSingleNode(SETTINGSROOT + "/" + Environment.MachineName);
 					}
 					catch (Exception)
 					{
@@ -264,7 +270,8 @@ namespace FeedBuilder
 
 		private void SetSerializedValue(XmlElement node, SettingsPropertyValue propVal)
 		{
-			if (propVal.Property.PropertyType.BaseType != null && propVal.Property.PropertyType.BaseType.Name == "CollectionBase")
+			if (propVal.Property.PropertyType.BaseType != null &&
+			    propVal.Property.PropertyType.BaseType.Name == "CollectionBase")
 			{
 				StringBuilder builder = new StringBuilder();
 				XmlSerializerNamespaces ns = new XmlSerializerNamespaces();
@@ -286,7 +293,7 @@ namespace FeedBuilder
 			//Determine if the setting is marked as Roaming
 			foreach (DictionaryEntry d in prop.Attributes)
 			{
-				Attribute a = (Attribute)d.Value;
+				Attribute a = (Attribute) d.Value;
 				if (a is SettingsManageabilityAttribute) return true;
 			}
 			return false;
@@ -304,6 +311,8 @@ namespace FeedBuilder
 			return null;
 		}
 
-		public void Upgrade(SettingsContext context, SettingsPropertyCollection properties)	{ }
+		public void Upgrade(SettingsContext context, SettingsPropertyCollection properties)
+		{
+		}
 	}
 }

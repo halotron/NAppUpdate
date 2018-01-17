@@ -30,3 +30,7 @@ Thumbs.db
 *.orig
 packages/
 FeedBuilder/FeedBuilder.xml
+/.vs/NAppUpdate/v15/Server/sqlite3/storage.ide-wal
+/.vs/NAppUpdate/v15/Server/sqlite3/storage.ide-shm
+/.vs/NAppUpdate/v15/Server/sqlite3/storage.ide
+/.vs/NAppUpdate/v15/Server/sqlite3/db.lock

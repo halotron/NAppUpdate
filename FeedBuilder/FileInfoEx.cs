@@ -32,7 +32,8 @@ namespace FeedBuilder
 			myFileInfo = new FileInfo(fileName);
 			var verInfo = FileVersionInfo.GetVersionInfo(fileName);
 			if (myFileVersion == null)
-				myFileVersion = new System.Version(verInfo.FileMajorPart, verInfo.FileMinorPart, verInfo.FileBuildPart, verInfo.FilePrivatePart).ToString();
+				myFileVersion = new System.Version(verInfo.FileMajorPart, verInfo.FileMinorPart, verInfo.FileBuildPart,
+					verInfo.FilePrivatePart).ToString();
 			myHash = NAppUpdate.Framework.Utils.FileChecksum.GetSHA256Checksum(fileName);
 
 			RelativeName = fileName.Substring(rootDirLength);

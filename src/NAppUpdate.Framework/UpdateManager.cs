@@ -30,20 +30,23 @@ namespace NAppUpdate.Framework
 			UpdateFeedReader = new NauXmlFeedReader();
 			Logger = new Logger();
 			Config = new NauConfigurations
-						{
-							TempFolder = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString()),
-							UpdateProcessName = "NAppUpdateProcess",
-							UpdateExecutableName = "foo.exe", // Naming it updater.exe seem to trigger the UAC, and we don't want that
-						};
+			{
+				TempFolder = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString()),
+				UpdateProcessName = "NAppUpdateProcess",
+				UpdateExecutableName = "foo.exe", // Naming it updater.exe seem to trigger the UAC, and we don't want that
+			};
 
 			// Need to do this manually here because the BackupFolder property is protected using the static instance, which we are
 			// in the middle of creating
-			string backupPath = Path.Combine(Path.GetDirectoryName(ApplicationPath) ?? string.Empty, "Backup" + DateTime.Now.Ticks);
+			string backupPath = Path.Combine(Path.GetDirectoryName(ApplicationPath) ?? string.Empty,
+				"Backup" + DateTime.Now.Ticks);
 			backupPath = backupPath.TrimEnd(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar);
 			Config._backupFolder = Path.IsPathRooted(backupPath) ? backupPath : Path.Combine(Config.TempFolder, backupPath);
 		}
 
-		static UpdateManager() { }
+		static UpdateManager()
+		{
+		}
 
 		/// <summary>
 		/// The singleton update manager instance to used by consumer applications
@@ -52,7 +55,9 @@ namespace NAppUpdate.Framework
 		{
 			get { return instance; }
 		}
+
 		private static readonly UpdateManager instance = new UpdateManager();
+
 		// ReSharper disable NotAccessedField.Local
 		private static Mutex _shutdownMutex;
 		// ReSharper restore NotAccessedField.Local
@@ -79,7 +84,12 @@ namespace NAppUpdate.Framework
 
 		internal string BaseUrl { get; set; }
 		internal IList<IUpdateTask> UpdatesToApply { get; private set; }
-		public int UpdatesAvailable { get { return UpdatesToApply == null ? 0 : UpdatesToApply.Count; } }
+
+		public int UpdatesAvailable
+		{
+			get { return UpdatesToApply == null ? 0 : UpdatesToApply.Count; }
+		}
+
 		public UpdateProcessState State { get; private set; }
 
 		public IUpdateSource UpdateSource { get; set; }
@@ -87,16 +97,25 @@ namespace NAppUpdate.Framework
 
 		public Logger Logger { get; private set; }
 
-		public IEnumerable<IUpdateTask> Tasks { get { return UpdatesToApply; } }
+		public IEnumerable<IUpdateTask> Tasks
+		{
+			get { return UpdatesToApply; }
+		}
 
 		internal volatile bool ShouldStop;
 
-		public bool IsWorking { get { return _isWorking; } private set { _isWorking = value; } }
+		public bool IsWorking
+		{
+			get { return _isWorking; }
+			private set { _isWorking = value; }
+		}
+
 		private volatile bool _isWorking;
 
 		#region Progress reporting
 
 		public event ReportProgressDelegate ReportProgress;
+
 		private void TaskProgressCallback(UpdateProgressInfo currentStatus, IUpdateTask task)
 		{
 			if (ReportProgress == null) return;
@@ -106,7 +125,8 @@ namespace NAppUpdate.Framework
 
 			//This was an assumed int, which meant we never reached 100% with an odd number of tasks
 			float taskPerc = 100F / UpdatesToApply.Count;
-			currentStatus.Percentage = (int)Math.Round((currentStatus.Percentage * taskPerc / 100) + (currentStatus.TaskId - 1) * taskPerc);
+			currentStatus.Percentage = (int)Math.Round((currentStatus.Percentage * taskPerc / 100) +
+														(currentStatus.TaskId - 1) * taskPerc);
 
 			ReportProgress(currentStatus);
 		}
@@ -185,7 +205,7 @@ namespace NAppUpdate.Framework
 				}
 			}, ar);
 
-			return ar;  // Return the IAsyncResult to the caller
+			return ar; // Return the IAsyncResult to the caller
 		}
 
 		/// <summary>
@@ -285,7 +305,7 @@ namespace NAppUpdate.Framework
 				}
 			}, ar);
 
-			return ar;  // Return the IAsyncResult to the caller
+			return ar; // Return the IAsyncResult to the caller
 		}
 
 		/// <summary>
@@ -433,27 +453,27 @@ namespace NAppUpdate.Framework
 					if (hasColdUpdates)
 					{
 						var dto = new NauIpc.NauDto
-									{
-										Configs = Instance.Config,
-										Tasks = Instance.UpdatesToApply,
-										AppPath = ApplicationPath,
-										WorkingDirectory = Environment.CurrentDirectory,
-										RelaunchApplication = relaunchApplication,
-										LogItems = Logger.LogItems,
-									};
+						{
+							Configs = Instance.Config,
+							Tasks = Instance.UpdatesToApply,
+							AppPath = ApplicationPath,
+							WorkingDirectory = Environment.CurrentDirectory,
+							RelaunchApplication = relaunchApplication,
+							LogItems = Logger.LogItems,
+						};
 
 						NauIpc.ExtractUpdaterFromResource(Config.TempFolder, Instance.Config.UpdateExecutableName);
 
 						var info = new ProcessStartInfo
-									{
-										UseShellExecute = true,
-										WorkingDirectory = Environment.CurrentDirectory,
-										FileName = Path.Combine(Config.TempFolder, Instance.Config.UpdateExecutableName),
-										Arguments =
-											string.Format(@"""{0}"" {1} {2}", Config.UpdateProcessName,
-														  updaterShowConsole ? "-showConsole" : string.Empty,
-														  updaterDoLogging ? "-log" : string.Empty),
-									};
+						{
+							UseShellExecute = true,
+							WorkingDirectory = Environment.CurrentDirectory,
+							FileName = Path.Combine(Config.TempFolder, Instance.Config.UpdateExecutableName),
+							Arguments =
+								string.Format(@"""{0}"" {1} {2}", Config.UpdateProcessName,
+									updaterShowConsole ? "-showConsole" : string.Empty,
+									updaterDoLogging ? "-log" : string.Empty),
+						};
 
 						if (!updaterShowConsole)
 						{
@@ -565,14 +585,18 @@ namespace NAppUpdate.Framework
 					if (Directory.Exists(Config.TempFolder))
 						FileSystem.DeleteDirectory(Config.TempFolder);
 				}
-				catch { }
+				catch
+				{
+				}
 
 				try
 				{
 					if (Directory.Exists(Config.BackupFolder))
 						FileSystem.DeleteDirectory(Config.BackupFolder);
 				}
-				catch { }
+				catch
+				{
+				}
 
 				ShouldStop = false;
 			}

@@ -43,7 +43,8 @@ namespace NAppUpdate.Framework.Utils
 		{
 			Process p;
 
-			using (NamedPipeServerStream pipe = new NamedPipeServerStream(syncProcessName, PipeDirection.Out, 1, PipeTransmissionMode.Message, PipeOptions.Asynchronous))
+			using (NamedPipeServerStream pipe = new NamedPipeServerStream(syncProcessName, PipeDirection.Out, 1,
+				PipeTransmissionMode.Message, PipeOptions.Asynchronous))
 			{
 				p = Process.Start(processStartInfo);
 
@@ -65,7 +66,8 @@ namespace NAppUpdate.Framework.Utils
 				{
 					Type exceptionType = Marshal.GetExceptionForHR(p.ExitCode).GetType();
 
-					throw new TimeoutException(string.Format("The NamedPipeServerStream timed out waiting for a named pipe connection, " +
+					throw new TimeoutException(string.Format(
+						"The NamedPipeServerStream timed out waiting for a named pipe connection, " +
 						"but the process has exited with exit code: {0} ({1})", p.ExitCode, exceptionType.FullName));
 				}
 				else
@@ -86,7 +88,8 @@ namespace NAppUpdate.Framework.Utils
 		{
 			NauDto dto;
 
-			using (NamedPipeClientStream pipe = new NamedPipeClientStream(".", syncProcessName, PipeDirection.In, PipeOptions.Asynchronous))
+			using (NamedPipeClientStream pipe =
+				new NamedPipeClientStream(".", syncProcessName, PipeDirection.In, PipeOptions.Asynchronous))
 			{
 				pipe.Connect(PIPE_TIMEOUT);
 

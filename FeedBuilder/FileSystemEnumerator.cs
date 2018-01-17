@@ -41,12 +41,13 @@ namespace FeedBuilder
 			if (null == fileTypesToMatch) throw new ArgumentNullException("fileTypesToMatch");
 
 			// make sure spec doesn't contain invalid characters
-			if (fileTypesToMatch.IndexOfAny(new[] { ':', '<', '>', '/', '\\' }) >= 0) throw new ArgumentException("Invalid characters in wildcard pattern", "fileTypesToMatch");
+			if (fileTypesToMatch.IndexOfAny(new[] {':', '<', '>', '/', '\\'}) >= 0)
+				throw new ArgumentException("Invalid characters in wildcard pattern", "fileTypesToMatch");
 
 			m_includeSubDirs = includeSubDirs;
-			m_paths = pathsToSearch.Split(new[] { ';', ',' });
+			m_paths = pathsToSearch.Split(new[] {';', ','});
 
-			string[] specs = fileTypesToMatch.Split(new[] { ';', ',' });
+			string[] specs = fileTypesToMatch.Split(new[] {';', ','});
 			m_fileSpecs = new List<Regex>(specs.Length);
 			foreach (string spec in specs)
 			{
@@ -114,7 +115,6 @@ namespace FeedBuilder
 
 				if (m_includeSubDirs)
 				{
-
 					foreach (var d in ProcessSubdirectories(path))
 					{
 						foreach (var fi in ProcessFiles(d))
@@ -125,4 +125,3 @@ namespace FeedBuilder
 		}
 	}
 }
-

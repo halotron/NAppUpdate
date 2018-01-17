@@ -87,7 +87,8 @@ namespace NAppUpdate.Updater
 			{
 				Log("Loading {0}", assemblyPath);
 
-				if (assemblyPath.Equals(Assembly.GetEntryAssembly().Location, StringComparison.InvariantCultureIgnoreCase) || assemblyPath.EndsWith("NAppUpdate.Framework.dll"))
+				if (assemblyPath.Equals(Assembly.GetEntryAssembly().Location, StringComparison.InvariantCultureIgnoreCase) ||
+				    assemblyPath.EndsWith("NAppUpdate.Framework.dll"))
 				{
 					Log("\tSkipping (part of current execution)");
 					continue;
@@ -140,7 +141,9 @@ namespace NAppUpdate.Updater
 
 			if (!string.IsNullOrEmpty(_dto.AppPath))
 			{
-				_logFilePath = Path.Combine(Path.GetDirectoryName(_dto.AppPath), @"NauUpdate.log"); // now we can log to a more accessible location
+				_logFilePath =
+					Path.Combine(Path.GetDirectoryName(_dto.AppPath),
+						@"NauUpdate.log"); // now we can log to a more accessible location
 			}
 
 			if (_dto.Tasks == null)
@@ -159,7 +162,8 @@ namespace NAppUpdate.Updater
 			{
 				Log("Task \"{0}\": {1}", t.Description, t.ExecutionStatus);
 
-				if (t.ExecutionStatus != TaskExecutionStatus.RequiresAppRestart && t.ExecutionStatus != TaskExecutionStatus.RequiresPrivilegedAppRestart)
+				if (t.ExecutionStatus != TaskExecutionStatus.RequiresAppRestart &&
+				    t.ExecutionStatus != TaskExecutionStatus.RequiresPrivilegedAppRestart)
 				{
 					Log("\tSkipping");
 					continue;
@@ -180,7 +184,9 @@ namespace NAppUpdate.Updater
 
 				if (t.ExecutionStatus != TaskExecutionStatus.Successful)
 				{
-					string taskFailedMessage = string.Format("Update failed, task execution failed, description: {0}, execution status: {1}", t.Description, t.ExecutionStatus);
+					string taskFailedMessage =
+						string.Format("Update failed, task execution failed, description: {0}, execution status: {1}", t.Description,
+							t.ExecutionStatus);
 					throw new Exception(taskFailedMessage, exception);
 				}
 			}
@@ -258,7 +264,8 @@ namespace NAppUpdate.Updater
 			{
 				var info = new ProcessStartInfo
 				{
-					Arguments = string.Format(@"/C ping 1.1.1.1 -n 1 -w 3000 > Nul & echo Y|del ""{0}\*.*"" & rmdir ""{0}""", tempFolder),
+					Arguments = string.Format(@"/C ping 1.1.1.1 -n 1 -w 3000 > Nul & echo Y|del ""{0}\*.*"" & rmdir ""{0}""",
+						tempFolder),
 					WindowStyle = ProcessWindowStyle.Hidden,
 					CreateNoWindow = true,
 					FileName = "cmd.exe"

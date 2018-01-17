@@ -25,7 +25,8 @@ namespace NAppUpdate.SampleApp
 			_helper = new UpdateTaskHelper();
 			InitializeComponent();
 
-			var iconStream = System.Reflection.Assembly.GetExecutingAssembly().GetManifestResourceStream("NAppUpdate.Framework.updateicon.ico");
+			var iconStream = System.Reflection.Assembly.GetExecutingAssembly()
+				.GetManifestResourceStream("NAppUpdate.Framework.updateicon.ico");
 			if (iconStream != null)
 				this.Icon = new IconBitmapDecoder(iconStream, BitmapCreateOptions.None, BitmapCacheOption.Default).Frames[0];
 			this.DataContext = _helper;
@@ -37,7 +38,10 @@ namespace NAppUpdate.SampleApp
 			// dummy time delay for demonstration purposes
 			var t = new System.Timers.Timer(2000) { AutoReset = false };
 			t.Start();
-			while (t.Enabled) { DoEvents(); }
+			while (t.Enabled)
+			{
+				DoEvents();
+			}
 
 			_updateManager.BeginPrepareUpdates(asyncResult =>
 			{
@@ -74,15 +78,15 @@ namespace NAppUpdate.SampleApp
 		{
 			var frame = new DispatcherFrame(true);
 			Dispatcher.CurrentDispatcher.BeginInvoke
-				(
-					DispatcherPriority.Background,
-					(System.Threading.SendOrPostCallback)delegate(object arg)
-						{
-							var f = arg as DispatcherFrame;
-							if (f != null) f.Continue = false;
-						},
-					frame
-				);
+			(
+				DispatcherPriority.Background,
+				(System.Threading.SendOrPostCallback)delegate (object arg)
+			   {
+				   var f = arg as DispatcherFrame;
+				   if (f != null) f.Continue = false;
+			   },
+				frame
+			);
 			Dispatcher.PushFrame(frame);
 		}
 
@@ -111,6 +115,5 @@ namespace NAppUpdate.SampleApp
 		}
 
 		#endregion
-
 	}
 }

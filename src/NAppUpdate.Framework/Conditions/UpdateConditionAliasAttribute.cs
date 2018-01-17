@@ -14,8 +14,7 @@ namespace NAppUpdate.Framework.Conditions
 
 		public string Alias
 		{
-			[System.Diagnostics.DebuggerStepThrough]
-			get { return this._alias; }
+			[System.Diagnostics.DebuggerStepThrough] get { return this._alias; }
 		}
 	}
 }

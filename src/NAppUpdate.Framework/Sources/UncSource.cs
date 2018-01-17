@@ -17,7 +17,9 @@ namespace NAppUpdate.Framework.Sources
 	/// </summary>
 	public class UncSource : IUpdateSource
 	{
-		public UncSource() { }
+		public UncSource()
+		{
+		}
 
 		public UncSource(string feedUncPath, string uncPath)
 		{

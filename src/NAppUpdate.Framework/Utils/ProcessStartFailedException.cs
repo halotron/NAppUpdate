@@ -10,7 +10,8 @@ namespace NAppUpdate.Framework.Utils
 	/// </summary>
 	internal class ProcessStartFailedException : Exception
 	{
-		public ProcessStartFailedException(string message) : base(message) { }
+		public ProcessStartFailedException(string message) : base(message)
+		{
+		}
 	}
-
 }

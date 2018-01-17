@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Xml;
-
 using NAppUpdate.Framework.Tasks;
 using NAppUpdate.Framework.Conditions;
 
@@ -48,7 +47,7 @@ namespace NAppUpdate.Framework.FeedReaders
 				if (!_updateTasks.ContainsKey(node.Name))
 					continue;
 
-				IUpdateTask task = (IUpdateTask)Activator.CreateInstance(_updateTasks[node.Name]);
+				IUpdateTask task = (IUpdateTask) Activator.CreateInstance(_updateTasks[node.Name]);
 
 				// Store all other task attributes, to be used by the task object later
 				if (node.Attributes != null)
@@ -107,15 +106,16 @@ namespace NAppUpdate.Framework.FeedReaders
 					IUpdateCondition childCondition = ReadCondition(child);
 					if (childCondition != null)
 						bc.AddCondition(childCondition,
-										BooleanCondition.ConditionTypeFromString(child.Attributes != null && child.Attributes["type"] != null
-																					 ? child.Attributes["type"].Value : null));
+							BooleanCondition.ConditionTypeFromString(child.Attributes != null && child.Attributes["type"] != null
+								? child.Attributes["type"].Value
+								: null));
 				}
 				if (bc.ChildConditionsCount > 0)
 					conditionObject = bc.Degrade();
 			}
 			else if (_updateConditions.ContainsKey(cnd.Name))
 			{
-				conditionObject = (IUpdateCondition)Activator.CreateInstance(_updateConditions[cnd.Name]);
+				conditionObject = (IUpdateCondition) Activator.CreateInstance(_updateConditions[cnd.Name]);
 
 				if (cnd.Attributes != null)
 				{

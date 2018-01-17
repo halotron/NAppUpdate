@@ -30,7 +30,7 @@ namespace NAppUpdate.Framework.Common
 
 			// The m_CompletedState field MUST be set prior calling the callback
 			Int32 prevState = Interlocked.Exchange(ref _completedState,
-			   completedSynchronously ? StateCompletedSynchronously : StateCompletedAsynchronously);
+				completedSynchronously ? StateCompletedSynchronously : StateCompletedAsynchronously);
 			if (prevState != StatePending)
 				throw new InvalidOperationException("You can set a result only once");
 
@@ -50,7 +50,7 @@ namespace NAppUpdate.Framework.Common
 				// If the operation isn't done, wait for it
 				AsyncWaitHandle.WaitOne();
 				AsyncWaitHandle.Close();
-				_asyncWaitHandle = null;  // Allow early GC
+				_asyncWaitHandle = null; // Allow early GC
 			}
 
 			// Operation is done: if an exception occured, throw it
@@ -59,10 +59,7 @@ namespace NAppUpdate.Framework.Common
 
 		public bool IsCompleted
 		{
-			get
-			{
-				return Thread.VolatileRead(ref _completedState) != StatePending;
-			}
+			get { return Thread.VolatileRead(ref _completedState) != StatePending; }
 		}
 
 		public WaitHandle AsyncWaitHandle
@@ -93,14 +90,14 @@ namespace NAppUpdate.Framework.Common
 			}
 		}
 
-		public Object AsyncState { get { return _asyncState; } }
+		public Object AsyncState
+		{
+			get { return _asyncState; }
+		}
 
 		public Boolean CompletedSynchronously
 		{
-			get
-			{
-				return Thread.VolatileRead(ref _completedState) == StateCompletedSynchronously;
-			}
+			get { return Thread.VolatileRead(ref _completedState) == StateCompletedSynchronously; }
 		}
 	}
 }

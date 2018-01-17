@@ -4,6 +4,8 @@ using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Runtime.InteropServices;
+using System.Security.Cryptography;
+using System.Text;
 using System.Threading;
 using System.Windows.Forms;
 using System.Xml;
@@ -100,14 +102,16 @@ namespace FeedBuilder
 			chkSize.Checked = Settings.Default.CompareSize;
 			chkDate.Checked = Settings.Default.CompareDate;
 			chkHash.Checked = Settings.Default.CompareHash;
+			chkSign.Checked = Settings.Default.Sign;
+			txtSignFile.Text = Settings.Default.SignFile;
 
 			chkIgnoreSymbols.Checked = Settings.Default.IgnoreDebugSymbols;
 			chkIgnoreVsHost.Checked = Settings.Default.IgnoreVsHosting;
 			chkCopyFiles.Checked = Settings.Default.CopyFiles;
 			chkCleanUp.Checked = Settings.Default.CleanUp;
-            txtAddExtension.Text = Settings.Default.AddExtension;
+			txtAddExtension.Text = Settings.Default.AddExtension;
 
-            if (Settings.Default.IgnoreFiles == null) Settings.Default.IgnoreFiles = new StringCollection();
+			if (Settings.Default.IgnoreFiles == null) Settings.Default.IgnoreFiles = new StringCollection();
 			ReadFiles();
 			UpdateTitle();
 		}
@@ -120,18 +124,22 @@ namespace FeedBuilder
 
 		private void SaveFormSettings()
 		{
-			if (!string.IsNullOrEmpty(txtOutputFolder.Text.Trim()) && Directory.Exists(txtOutputFolder.Text.Trim())) Settings.Default.OutputFolder = txtOutputFolder.Text.Trim();
+			if (!string.IsNullOrEmpty(txtOutputFolder.Text.Trim()) && Directory.Exists(txtOutputFolder.Text.Trim()))
+				Settings.Default.OutputFolder = txtOutputFolder.Text.Trim();
 			// ReSharper disable AssignNullToNotNullAttribute
-			if (!string.IsNullOrEmpty(txtFeedXML.Text.Trim()) && Directory.Exists(Path.GetDirectoryName(txtFeedXML.Text.Trim()))) Settings.Default.FeedXML = txtFeedXML.Text.Trim();
+			if (!string.IsNullOrEmpty(txtFeedXML.Text.Trim()) && Directory.Exists(Path.GetDirectoryName(txtFeedXML.Text.Trim())))
+				Settings.Default.FeedXML = txtFeedXML.Text.Trim();
 			// ReSharper restore AssignNullToNotNullAttribute
 			if (!string.IsNullOrEmpty(txtBaseURL.Text.Trim())) Settings.Default.BaseURL = txtBaseURL.Text.Trim();
 
-            if (!string.IsNullOrEmpty(txtAddExtension.Text.Trim())) Settings.Default.AddExtension = txtAddExtension.Text.Trim();
+			if (!string.IsNullOrEmpty(txtAddExtension.Text.Trim())) Settings.Default.AddExtension = txtAddExtension.Text.Trim();
 
-            Settings.Default.CompareVersion = chkVersion.Checked;
+			Settings.Default.CompareVersion = chkVersion.Checked;
 			Settings.Default.CompareSize = chkSize.Checked;
 			Settings.Default.CompareDate = chkDate.Checked;
 			Settings.Default.CompareHash = chkHash.Checked;
+			Settings.Default.Sign = chkSign.Checked;
+			Settings.Default.SignFile = txtSignFile.Text;
 
 			Settings.Default.IgnoreDebugSymbols = chkIgnoreSymbols.Checked;
 			Settings.Default.IgnoreVsHosting = chkIgnoreVsHost.Checked;
@@ -244,11 +252,12 @@ namespace FeedBuilder
 		private void Build()
 		{
 			AttachConsole(ATTACH_PARENT_PROCESS);
-			
+
 			Console.WriteLine("Building NAppUpdater feed '{0}'", txtBaseURL.Text.Trim());
 			if (string.IsNullOrEmpty(txtFeedXML.Text))
 			{
-				const string msg = "The feed file location needs to be defined.\n" + "The outputs cannot be generated without this.";
+				const string msg = "The feed file location needs to be defined.\n" +
+				                   "The outputs cannot be generated without this.";
 				if (_argParser.ShowGui) MessageBox.Show(msg);
 				Console.WriteLine(msg);
 				return;
@@ -283,7 +292,9 @@ namespace FeedBuilder
 					filename = thisItem.Text;
 					destFile = Path.Combine(destDir.FullName, filename);
 				}
-				catch { }
+				catch
+				{
+				}
 				if (destFile == "" || filename == "")
 				{
 					string msg = string.Format("The file could not be pathed:\nFolder:'{0}'\nFile:{1}", destDir.FullName, filename);
@@ -294,11 +305,13 @@ namespace FeedBuilder
 
 				if (thisItem.Checked)
 				{
-					var fileInfoEx = (FileInfoEx)thisItem.Tag;
+					var fileInfoEx = (FileInfoEx) thisItem.Tag;
 					XmlElement task = doc.CreateElement("FileUpdateTask");
 					task.SetAttribute("localPath", fileInfoEx.RelativeName);
-                    // generate FileUpdateTask metadata items
-                    task.SetAttribute("lastModified", fileInfoEx.FileInfo.LastWriteTime.ToFileTime().ToString(CultureInfo.InvariantCulture));
+
+					// generate FileUpdateTask metadata items
+					task.SetAttribute("lastModified",
+						fileInfoEx.FileInfo.LastWriteTime.ToFileTime().ToString(CultureInfo.InvariantCulture));
 					if (!string.IsNullOrEmpty(txtAddExtension.Text))
 					{
 						task.SetAttribute("updateTo", AddExtensionToPath(fileInfoEx.RelativeName, txtAddExtension.Text));
@@ -314,6 +327,7 @@ namespace FeedBuilder
 					cond = doc.CreateElement("FileExistsCondition");
 					cond.SetAttribute("type", "or-not");
 					conds.AppendChild(cond);
+
 
 					//Version
 					if (chkVersion.Checked && !string.IsNullOrEmpty(fileInfoEx.FileVersion))
@@ -342,7 +356,8 @@ namespace FeedBuilder
 						cond.SetAttribute("type", "or");
 						cond.SetAttribute("what", "older");
 						// local timestamp, not UTC
-						cond.SetAttribute("timestamp", fileInfoEx.FileInfo.LastWriteTime.ToFileTime().ToString(CultureInfo.InvariantCulture));
+						cond.SetAttribute("timestamp",
+							fileInfoEx.FileInfo.LastWriteTime.ToFileTime().ToString(CultureInfo.InvariantCulture));
 						conds.AppendChild(cond);
 					}
 
@@ -385,6 +400,20 @@ namespace FeedBuilder
 			}
 			feed.AppendChild(tasks);
 
+			if (chkSign.Checked)
+			{
+				try
+				{
+					string signature = SignUpdate(doc, txtSignFile.Text);
+					feed.SetAttribute("RSASignature", signature);
+				}
+				catch (Exception)
+				{
+					Console.WriteLine("Could not sign the file. Probably the private key file is invalid");
+					return;
+				}
+			}
+
 			string xmlDest = Path.Combine(destDir.FullName, Path.GetFileName(dest));
 			doc.Save(xmlDest);
 
@@ -397,6 +426,52 @@ namespace FeedBuilder
 			if (itemsSkipped > 0) Console.WriteLine("{0,5} items skipped", itemsSkipped);
 			if (itemsFailed > 0) Console.WriteLine("{0,5} items failed", itemsFailed);
 			if (itemsMissingConditions > 0) Console.WriteLine("{0,5} items without any conditions", itemsMissingConditions);
+		}
+
+		private string SignUpdate(XmlDocument doc, string pathToSignFile)
+		{
+			string keyFileContent = null;
+			if (string.IsNullOrEmpty(pathToSignFile))
+			{
+				throw new Exception("signature file not specified");
+			}
+			try
+			{
+				using (var file = File.Open(pathToSignFile, FileMode.Open))
+				{
+					StreamReader sr = new StreamReader(file);
+					keyFileContent = sr.ReadToEnd();
+				}
+			}
+			catch (Exception)
+			{
+				throw new Exception("Could not open or read file: " + keyFileContent);
+			}
+			if (string.IsNullOrEmpty(keyFileContent))
+			{
+				throw new Exception("key file was empty");
+			}
+
+			RSACryptoServiceProvider provider = new RSACryptoServiceProvider();
+			provider.PersistKeyInCsp = false;
+			try
+			{
+				provider.FromXmlString(keyFileContent);
+				if (provider.PublicOnly)
+				{
+					throw new Exception();
+				}
+			}
+			catch (Exception)
+			{
+				throw new Exception(
+					"Could not read signing key. It needs to have an xml format, as required by RSACryptoServiceProvider, and it needs to contain both private and public parts");
+			}
+
+			SHA512Managed sha = new SHA512Managed();
+			var hash = sha.ComputeHash(Encoding.UTF8.GetBytes(doc.InnerXml));
+			string signature = Convert.ToBase64String(provider.SignHash(hash, "sha512"));
+			return signature;
 		}
 
 		private bool CopyFile(string sourceFile, string destFile)
@@ -417,7 +492,7 @@ namespace FeedBuilder
 				try
 				{
 					if (File.Exists(destFile)) File.Delete(destFile);
-                    File.Copy(sourceFile, destFile);
+					File.Copy(sourceFile, destFile);
 					retries = 0; // success
 					return true;
 				}
@@ -608,14 +683,14 @@ namespace FeedBuilder
 
 		private void frmMain_DragEnter(object sender, DragEventArgs e)
 		{
-			string[] files = (string[])e.Data.GetData(DataFormats.FileDrop);
+			string[] files = (string[]) e.Data.GetData(DataFormats.FileDrop);
 			if (files.Length == 0) return;
 			e.Effect = files[0].EndsWith(".config") ? DragDropEffects.Move : DragDropEffects.None;
 		}
 
 		private void frmMain_DragDrop(object sender, DragEventArgs e)
 		{
-			string[] files = (string[])e.Data.GetData(DataFormats.FileDrop);
+			string[] files = (string[]) e.Data.GetData(DataFormats.FileDrop);
 			if (files.Length == 0) return;
 			try
 			{
@@ -630,6 +705,39 @@ namespace FeedBuilder
 				MessageBox.Show("The file could not be opened: \n" + ex.Message);
 			}
 		}
+
+		private void helpfulTextBox1_TextChanged(object sender, EventArgs e)
+		{
+		}
+
+		private void button1_Click(object sender, EventArgs e)
+		{
+			openFileDialog1.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+			if (openFileDialog1.ShowDialog(this) != DialogResult.OK) return;
+			txtSignFile.Text = openFileDialog1.FileName;
+		}
+
+		private void chkSign_CheckedChanged(object sender, EventArgs e)
+		{
+			lblSignFile.Enabled = chkSign.Checked;
+			cmdSignFile.Enabled = chkSign.Checked;
+			txtSignFile.Enabled = chkSign.Checked;
+			cmdCreateSigFile.Enabled = chkSign.Checked;
+
+			if (!chkHash.Checked && chkSign.Checked)
+			{
+				chkHash.Checked = true;
+			}
+			chkHash.Enabled = !chkSign.Checked;
+		}
+
+		private void cmdCreateSigFile_Click(object sender, EventArgs e)
+		{
+			var win = new frmCreateNewSignatureFile();
+			win.Show();
+			win.FormClosing += (a, b) => { txtSignFile.Text = win.SelectedPublicKeyPath; };
+		}
+
 
 		private static readonly int ATTACH_PARENT_PROCESS = -1;
 

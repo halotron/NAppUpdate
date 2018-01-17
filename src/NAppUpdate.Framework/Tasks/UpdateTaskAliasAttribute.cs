@@ -16,8 +16,7 @@ namespace NAppUpdate.Framework.Tasks
 
 		public string Alias
 		{
-			[System.Diagnostics.DebuggerStepThrough]
-			get { return this._alias; }
+			[System.Diagnostics.DebuggerStepThrough] get { return this._alias; }
 		}
 	}
 }

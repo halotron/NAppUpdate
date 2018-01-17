@@ -32,7 +32,8 @@ namespace NAppUpdate.Framework.Tasks
 		{
 			if (string.IsNullOrEmpty(LocalPath))
 			{
-				UpdateManager.Instance.Logger.Log(Logger.SeverityLevel.Warning, "FileUpdateTask: LocalPath is empty, task is a noop");
+				UpdateManager.Instance.Logger.Log(Logger.SeverityLevel.Warning,
+					"FileUpdateTask: LocalPath is empty, task is a noop");
 				return; // Errorneous case, but there's nothing to prepare to, and by default we prefer a noop over an error
 			}
 
@@ -47,7 +48,8 @@ namespace NAppUpdate.Framework.Tasks
 			string baseUrl = UpdateManager.Instance.BaseUrl;
 			string tempFileLocal = Path.Combine(UpdateManager.Instance.Config.TempFolder, Guid.NewGuid().ToString());
 
-			UpdateManager.Instance.Logger.Log("FileUpdateTask: Downloading {0} with BaseUrl of {1} to {2}", fileName, baseUrl, tempFileLocal);
+			UpdateManager.Instance.Logger.Log("FileUpdateTask: Downloading {0} with BaseUrl of {1} to {2}", fileName, baseUrl,
+				tempFileLocal);
 
 			if (!source.GetData(fileName, baseUrl, OnProgress, ref tempFileLocal))
 				throw new UpdateProcessFailedException("FileUpdateTask: Failed to get file from source");
@@ -60,7 +62,8 @@ namespace NAppUpdate.Framework.Tasks
 			{
 				string checksum = FileChecksum.GetSHA256Checksum(_tempFile);
 				if (!checksum.Equals(Sha256Checksum))
-					throw new UpdateProcessFailedException(string.Format("FileUpdateTask: Checksums do not match; expected {0} but got {1}", Sha256Checksum, checksum));
+					throw new UpdateProcessFailedException(string.Format(
+						"FileUpdateTask: Checksums do not match; expected {0} but got {1}", Sha256Checksum, checksum));
 			}
 
 			_destinationFile = Path.Combine(Path.GetDirectoryName(UpdateManager.Instance.ApplicationPath), LocalPath);
@@ -71,8 +74,11 @@ namespace NAppUpdate.Framework.Tasks
 		{
 			if (string.IsNullOrEmpty(LocalPath))
 			{
-				UpdateManager.Instance.Logger.Log(Logger.SeverityLevel.Warning, "FileUpdateTask: LocalPath is empty, task is a noop");
-				return TaskExecutionStatus.Successful; // Errorneous case, but there's nothing to prepare to, and by default we prefer a noop over an error
+				UpdateManager.Instance.Logger.Log(Logger.SeverityLevel.Warning,
+					"FileUpdateTask: LocalPath is empty, task is a noop");
+				return
+					TaskExecutionStatus
+						.Successful; // Errorneous case, but there's nothing to prepare to, and by default we prefer a noop over an error
 			}
 
 			var dirName = Path.GetDirectoryName(_destinationFile);
@@ -104,7 +110,8 @@ namespace NAppUpdate.Framework.Tasks
 					{
 						if (coldRun)
 						{
-							UpdateManager.Instance.Logger.Log(Logger.SeverityLevel.Warning, "Don't have permissions to touch {0}", _destinationFile);
+							UpdateManager.Instance.Logger.Log(Logger.SeverityLevel.Warning, "Don't have permissions to touch {0}",
+								_destinationFile);
 							File.Delete(_destinationFile); // get the original exception from the system
 						}
 						CanHotSwap = false;
@@ -159,6 +166,7 @@ namespace NAppUpdate.Framework.Tasks
 
 			return true;
 		}
+
 		/// <summary>
 		/// To mitigate problems with the files being locked even though the application mutex has been released.
 		/// https://github.com/synhershko/NAppUpdate/issues/35

@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System;
+using System.Reflection;
 using System.Threading;
 using NAppUpdate.Framework.Common;
 using NAppUpdate.Framework.FeedReaders;
@@ -27,6 +28,11 @@ namespace NAppUpdate.Framework
 			State = UpdateProcessState.NotChecked;
 			UpdatesToApply = new List<IUpdateTask>();
 			ApplicationPath = Process.GetCurrentProcess().MainModule.FileName;
+			ApplicationPath = Directory.GetCurrentDirectory();
+			var entryAssembly = Assembly.GetEntryAssembly();
+			if(entryAssembly == null)
+				entryAssembly = Assembly.GetExecutingAssembly();
+			ApplicationPath = Path.GetDirectoryName(entryAssembly.Location);
 			UpdateFeedReader = new NauXmlFeedReader();
 			Logger = new Logger();
 			Config = new NauConfigurations
@@ -38,7 +44,7 @@ namespace NAppUpdate.Framework
 
 			// Need to do this manually here because the BackupFolder property is protected using the static instance, which we are
 			// in the middle of creating
-			string backupPath = Path.Combine(Path.GetDirectoryName(ApplicationPath) ?? string.Empty, "Backup" + DateTime.Now.Ticks);
+			string backupPath = Path.Combine(ApplicationPath ?? string.Empty, "Backup" + DateTime.Now.Ticks);
 			backupPath = backupPath.TrimEnd(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar);
 			Config._backupFolder = Path.IsPathRooted(backupPath) ? backupPath : Path.Combine(Config.TempFolder, backupPath);
 		}
@@ -344,7 +350,7 @@ namespace NAppUpdate.Framework
 					// this prevents the updater from writing to e.g. c:\windows\system32
 					// if the process is started by autorun on windows logon.
 					// ReSharper disable AssignNullToNotNullAttribute
-					Environment.CurrentDirectory = Path.GetDirectoryName(ApplicationPath);
+					Environment.CurrentDirectory = ApplicationPath;
 					// ReSharper restore AssignNullToNotNullAttribute
 
 					// Make sure the current backup folder is accessible for writing from this process

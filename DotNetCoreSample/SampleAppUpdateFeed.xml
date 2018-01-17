@@ -1,0 +1,11 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Feed>
+  <Tasks>
+    <FileUpdateTask hotswap="true" updateTo="http://SomeSite.com/Files/NewVersion.txt" localPath="CurrentVersion.txt">
+      <Description>Fixes a bug where versions should be odd numbers.</Description>
+      <Conditions>
+        <!--<FileChecksumCondition checksumType="sha256" checksum="15B6ECCEC56127229776CF782E0A6436521AE7851E5750E066DB9ECB2E8D642E" />-->
+      </Conditions>
+    </FileUpdateTask>
+  </Tasks>
+</Feed>

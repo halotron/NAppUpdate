@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
@@ -10,7 +10,8 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>NAppUpdate.Framework</RootNamespace>
     <AssemblyName>NAppUpdate.Framework</AssemblyName>
-    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+	<TargetFrameworks>netstandard2.0;net40;net45;net35</TargetFrameworks>
+	<!--<RuntimeIdentifier>win7-x64</RuntimeIdentifier>-->
     <FileAlignment>512</FileAlignment>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>NAppUpdate.snk</AssemblyOriginatorKeyFile>
@@ -72,57 +73,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Common\INauFieldsHolder.cs" />
-    <Compile Include="Common\Logger.cs" />
-    <Compile Include="Common\NauConfigurations.cs" />
-    <Compile Include="Common\NauFieldAttribute.cs" />
-    <Compile Include="Common\UpdateProcessAsyncResult.cs" />
-    <Compile Include="Common\UpdateProgressInfo.cs" />
-    <Compile Include="Common\WorkScope.cs" />
-    <Compile Include="Conditions\FileChecksumCondition.cs" />
-    <Compile Include="Conditions\FileDateCondition.cs" />
-    <Compile Include="Conditions\FileSizeCondition.cs" />
-    <Compile Include="Conditions\OSCondition.cs" />
-    <Compile Include="Common\Exceptions.cs" />
-    <Compile Include="FeedReaders\AppcastReader.cs" />
-    <Compile Include="Conditions\BooleanCondition.cs" />
-    <Compile Include="Conditions\FileExistsCondition.cs" />
-    <Compile Include="Conditions\FileVersionCondition.cs" />
-    <Compile Include="Conditions\IUpdateCondition.cs" />
-    <Compile Include="Conditions\UpdateConditionAliasAttribute.cs" />
-    <Compile Include="FeedReaders\IUpdateFeedReader.cs" />
-    <Compile Include="FeedReaders\NauXmlFeedReader.cs" />
-    <Compile Include="FeedReaders\NauXmlFeedReaderSigned.cs" />
-    <Compile Include="Resources.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Resources.resx</DependentUpon>
-    </Compile>
-    <Compile Include="Sources\IUpdateSource.cs" />
-    <Compile Include="Sources\MemorySource.cs" />
-    <Compile Include="Sources\SimpleWebSource.cs" />
-    <Compile Include="Sources\UncSource.cs" />
-    <Compile Include="Tasks\FileUpdateTask.cs" />
-    <Compile Include="Tasks\IUpdateTask.cs" />
-    <Compile Include="Tasks\RegistryTask.cs" />
-    <Compile Include="Tasks\UpdateTaskAliasAttribute.cs" />
-    <Compile Include="Tasks\UpdateTaskBase.cs" />
-    <Compile Include="UpdateManager.cs" />
-    <Compile Include="Utils\FileChecksum.cs" />
-    <Compile Include="Utils\FileDownloader.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Utils\NauIpc.cs" />
-    <Compile Include="Utils\FileSystem.cs" />
-    <Compile Include="Utils\PermissionsCheck.cs" />
-    <Compile Include="Utils\ProcessStartFailedException.cs" />
-    <Compile Include="Utils\Reflection.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Resources.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
     <None Include="NAppUpdate.snk" />
     <None Include="Updater\updater.exe" />
   </ItemGroup>
@@ -143,8 +93,15 @@
       <Install>true</Install>
     </BootstrapperPackage>
   </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="updateicon.ico" />
+  <ItemGroup Condition="'$(TargetFramework)' == 'net40'">
+    <PackageReference Include="Mono.Posix.NETStandard">
+      <Version>1.0.0-beta3</Version>
+    </PackageReference>
+  </ItemGroup>
+  <ItemGroup Condition="'$(TargetFramework)' == 'net45'">
+    <PackageReference Include="Mono.Posix.NETStandard">
+      <Version>1.0.0-beta3</Version>
+    </PackageReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

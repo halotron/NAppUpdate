@@ -101,6 +101,7 @@ namespace NAppUpdate.Framework.Utils
 
 		public static void CopyAccessControl(FileInfo src, FileInfo dst)
 		{
+			return;
 			FileSecurity fs = src.GetAccessControl();
 
 			bool hasInheritanceRules = fs.GetAccessRules(false, true, typeof(SecurityIdentifier)).Count > 0;
